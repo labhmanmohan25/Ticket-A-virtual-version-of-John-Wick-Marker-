@@ -12,7 +12,7 @@ export default function Navigation() {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name="Friends" component={Friends} />
+        <Tab.Screen name="Friends List" component={Friends} options={{headerShown: false}} />
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
     </NavigationContainer>

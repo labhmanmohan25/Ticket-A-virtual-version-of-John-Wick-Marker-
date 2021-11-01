@@ -3,6 +3,9 @@ import React, {useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, FlatList } from 'react-native';
 import COLORS from '../assets/colors'
 import ICONS from '../assets/icons/icons'
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 const data = [
   {
@@ -87,11 +90,11 @@ const data = [
   },
 ]
 
-export default function Friends({setpage}) {
+export default function Friends({navigation}) {
 
   const renderItem = ({ item }) => {
     return(
-      <TouchableOpacity style={styles.ticketWrapper}>
+      <TouchableOpacity style={styles.ticketWrapper} onPress={() => navigation.navigate('Tickets', { item: item })}>
         <Image source={{
           uri: item.profile,
         }} 
@@ -103,11 +106,28 @@ export default function Friends({setpage}) {
     );
   }
 
+  const friendsList = () => {
+    return (
+      <View style={styles.container}>
+        <FlatList data={data} renderItem={renderItem} keyExtractor={item => item.id} style={{width: '100%'}}/>
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
+
+  const tickets = ({navigation, route}) => {
+    return(
+      <Text>
+        Ticket {route.params.item.name}
+      </Text>
+    )
+  }
+
   return (
-    <View style={styles.container}>
-      <FlatList data={data} renderItem={renderItem} keyExtractor={item => item.id} style={{width: '100%'}}/>
-      <StatusBar style="auto" />
-    </View>
+    <Stack.Navigator>
+      <Stack.Screen name="Friends" component={friendsList} />
+      <Stack.Screen name="Tickets" component={tickets} />
+    </Stack.Navigator>
   );
 }
 
