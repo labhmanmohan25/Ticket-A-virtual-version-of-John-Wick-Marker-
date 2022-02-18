@@ -1,8 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, Alert} from 'react-native';
 import COLORS from '../assets/colors'
 import ICONS from '../assets/icons/icons'
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 export default function Signup({setpage}) {
 
@@ -38,6 +42,27 @@ export default function Signup({setpage}) {
           </TouchableOpacity>
         </View>
       )
+    }
+  }
+
+  const createAlert = (head, content) => {
+    Alert.alert(head, content, [
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ]);
+  }
+
+  const onSignUp = async () => {
+    if(name !== "" || email !== "" || password !== ""){
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((result) => {
+          console.log('successful')
+        })
+        .catch((error) => {
+          createAlert('Error', 'We applogize. Something went wrong. Please try again later.')
+        })
+    }
+    else{
+      createAlert('Details Missing', 'Please fill all the details. They are required to create your account and verify when you want to login next time.');
     }
   }
 
@@ -99,7 +124,7 @@ export default function Signup({setpage}) {
         </TouchableOpacity>
       </View>
       <TouchableOpacity
-        onPress={() => alert('Hello, world!')}
+        onPress={() => onSignUp()}
         style={styles.loginButton}
       >
         <Text style={{ fontSize: 20, color: '#fff' }}>Signup</Text>
@@ -183,7 +208,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '80%',
     borderRadius: 10,
     width: '30%',
   },
@@ -196,7 +220,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '80%',
     borderRadius: 10,
     borderWidth: 1,
     width: '30%',

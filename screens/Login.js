@@ -1,12 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
 import COLORS from '../assets/colors'
 import ICONS from '../assets/icons/icons'
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 export default function Login({setpage}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const createAlert = (head, content) => {
+    Alert.alert(head, content, [
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ]);
+  }
+
+  const onSignIn = async () => {
+    if(email !== "" || password !== ""){
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((result) => {
+          console.log('successful')
+        })
+        .catch((error) => {
+          createAlert('Error', 'We applogize. Something went wrong. Please try again later.')
+        })
+    }
+    else{
+      createAlert('Details Missing', 'Please fill all the details. They are required to create your account and verify when you want to login next time.');
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -38,7 +63,7 @@ export default function Login({setpage}) {
         placeholderTextColor={COLORS.primary}
       />
       <TouchableOpacity
-        onPress={() => alert('Hello, world!')}
+        onPress={() => onSignIn()}
         style={styles.loginButton}
       >
         <Text style={{ fontSize: 20, color: '#fff' }}>Sign in</Text>
